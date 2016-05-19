@@ -114,5 +114,23 @@ describe('application logic', () => {
         entries: List.of('127 Hours', 'Trainspotting', '28 Days Later')
       }));
     });
+
+    it('should not allow entries to be voted on if they are not included in current pair', () => {
+      const state = Map({
+        pair: List.of('Trainspotting', '28 Days Later'),
+        tally: Map({
+          'Trainspotting': 3,
+          '28 Days Later': 2
+        })
+      });
+      const nextState = vote(state, 'Millions');
+      expect(nextState).to.equal(Map({
+        pair: List.of('Trainspotting', '28 Days Later'),
+        tally: Map({
+          'Trainspotting': 3,
+          '28 Days Later': 2
+        })
+      }));
+    });
   });
 });
