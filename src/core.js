@@ -6,10 +6,6 @@ export function setEntries (state, entries) {
   return state.set('entries', List(entries));
 }
 
-export function initRound (state) {
-  return state.set('round', 0);
-}
-
 function getWinners(vote) {
   if (!vote) return [];
   const [a, b] = vote.get('pair');
@@ -28,19 +24,21 @@ function getWinners(vote) {
 export function next (state) {
   const entries = state.get('entries')
     .concat(getWinners(state.get('vote')));
-  const nextRound = state.get('round') + 1;
 
   if (entries.size === 1) {
     return state
       .remove('vote')
       .remove('entries')
-      .remove('round')
       .set('winner', entries.first());
   }
   return state.merge({
-    vote: Map({pair: entries.take(2)}),
+    vote: Map({
+      // if state.vote.round is not initialized then set to 0
+      // otherwise grab current round number and add 1
+      round: state.getIn(['vote', 'round'], 0) + 1,
+      pair: entries.take(2)
+    }),
     entries: entries.skip(2),
-    round: nextRound 
   });
 }
 

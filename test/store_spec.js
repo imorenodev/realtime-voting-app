@@ -13,7 +13,6 @@ describe('store', () => {
     });
     expect(store.getState()).to.equal(fromJS({
       entries: ['Trainspotting', '28 Days Later'],
-      round: 0
     }));
   });
 });
