@@ -12,7 +12,8 @@ describe('store', () => {
       entries: ['Trainspotting', '28 Days Later']
     });
     expect(store.getState()).to.equal(fromJS({
-      entries: ['Trainspotting', '28 Days Later']
+      entries: ['Trainspotting', '28 Days Later'],
+      round: 0
     }));
   });
 });

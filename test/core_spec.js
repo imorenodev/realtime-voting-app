@@ -1,6 +1,6 @@
 import { List, Map } from 'immutable';
 import { expect } from 'chai';
-import { setEntries, next, vote } from '../src/core';
+import { setEntries, next, vote, initRound} from '../src/core';
 
 describe('application logic', () => {
   describe('setEntries', () => {
@@ -12,18 +12,31 @@ describe('application logic', () => {
         entries: List.of('Trainspotting', '28 Days Later')
       }));
     });
+    
+    it('initializes round counter onto the state', () => {
+      const state = Map();
+      const entries = List.of('Trainspotting', '28 Days Later');
+      const nextState = initRound(setEntries(state, entries));
+      expect(nextState).to.equal(Map({
+        entries: List.of('Trainspotting', '28 Days Later'),
+        round: 0
+      }));
+    })
+
   });
   describe('next', () => {
     it('takes the next two entries under vote', () => {
       const state = Map({
-        entries: List.of('Trainspotting', '28 Days Later', 'Sunshine')
+        entries: List.of('Trainspotting', '28 Days Later', 'Sunshine'),
+        round: 0
       });
       const nextState = next(state);
       expect(nextState).to.equal(Map({
         vote: Map({
           pair: List.of('Trainspotting', '28 Days Later')
         }),
-        entries: List.of('Sunshine')
+        entries: List.of('Sunshine'),
+        round: 1
       }));
     });
     it('marks winner when just one entry left', () => {
@@ -84,14 +97,16 @@ describe('application logic', () => {
             '28 Days Later': 2
           })
         }),
-        entries: List.of('Sunshine', 'Millions', '127 Hours')
+        entries: List.of('Sunshine', 'Millions', '127 Hours'),
+        round: 0
       });
       const nextState = next(state);
       expect(nextState).to.equal(Map({
         vote: Map({
           pair: List.of('Sunshine', 'Millions')
         }),
-        entries: List.of('127 Hours', 'Trainspotting')
+        entries: List.of('127 Hours', 'Trainspotting'),
+        round: 1
       }));
     });
 
@@ -104,14 +119,16 @@ describe('application logic', () => {
             '28 Days Later': 3
           })
         }),
-        entries: List.of('Sunshine', 'Millions', '127 Hours')
+        entries: List.of('Sunshine', 'Millions', '127 Hours'),
+        round: 0
       });
       const nextState = next(state);
       expect(nextState).to.equal(Map({
         vote: Map({
           pair: List.of('Sunshine', 'Millions')
         }),
-        entries: List.of('127 Hours', 'Trainspotting', '28 Days Later')
+        entries: List.of('127 Hours', 'Trainspotting', '28 Days Later'),
+        round: 1
       }));
     });
 
